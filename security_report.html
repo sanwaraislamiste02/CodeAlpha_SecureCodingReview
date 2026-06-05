@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Secure Code Review Report — vulnerable_app.py</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0c10;--surface:#111318;--surface2:#181c24;--border:#232835;
+  --text:#e8eaf0;--muted:#6b7280;--accent:#ff4d4d;--safe:#00e5a0;
+  --font:'Syne',sans-serif;--mono:'DM Mono',monospace;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);padding:40px;}
+h1{font-size:2rem;font-weight:800;margin-bottom:6px}
+.subtitle{color:var(--muted);font-size:14px;font-family:var(--mono);margin-bottom:40px}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px;max-width:800px}
+.summary-card{background:var(--surface);border:1px solid var(--border);padding:24px;border-radius:4px}
+.summary-card h3{font-size:12px;letter-spacing:2px;color:var(--muted);margin-bottom:16px}
+.total-num{font-size:3rem;font-weight:800;color:var(--accent);font-family:var(--mono)}
+.sev-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.sev-label{font-family:var(--mono);font-size:11px;min-width:70px;letter-spacing:1px}
+.sev-bar-bg{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.sev-bar{height:100%;border-radius:3px;transition:width 1s ease}
+.sev-count{font-family:var(--mono);font-size:12px;min-width:20px;text-align:right}
+.findings-list{display:flex;flex-direction:column;gap:20px;max-width:900px}
+.finding-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.finding-header{padding:20px 24px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.badge{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:2px;letter-spacing:1px}
+.vuln-id{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:10px}
+.finding-title{font-size:1.1rem;font-weight:700;margin:10px 0 8px}
+.finding-meta{display:flex;gap:16px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.finding-body{padding:24px}
+.code-line{background:#0d0f13;border:1px solid var(--border);padding:12px 16px;border-radius:3px;
+  font-family:var(--mono);font-size:13px;margin-bottom:20px;overflow-x:auto}
+.ln{color:var(--muted);margin-right:16px;user-select:none}
+.finding-section{margin-bottom:18px}
+.finding-section strong{font-size:12px;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:6px}
+.finding-section p{font-size:14px;line-height:1.7;color:#c8ccd6}
+.impact strong{color:#ffd16680}
+.remedy strong{color:#00e5a080}
+pre{background:#0d0f13;border:1px solid var(--border);padding:16px;
+  border-radius:3px;overflow-x:auto;margin-top:12px;font-family:var(--mono);font-size:12px;
+  line-height:1.7;color:#a8d8a0}
+footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:12px;color:var(--muted);text-align:center}
+</style></head><body>
+<h1>🔐 Secure Code Review Report</h1>
+<div class="subtitle">Target: vulnerable_app.py &nbsp;|&nbsp; Generated: 2026-06-06 02:45:16 &nbsp;|&nbsp; CodeAlpha Task 3</div>
+
+<div class="summary-grid">
+  <div class="summary-card">
+    <h3>TOTAL VULNERABILITIES</h3>
+    <div class="total-num">12</div>
+    <p style="color:var(--muted);font-size:13px;margin-top:8px">across 9 unique issue types</p>
+  </div>
+  <div class="summary-card">
+    <h3>BY SEVERITY</h3>
+    <div class="sev-row">
+  <span class="sev-label" style="color:#ff4d4d">CRITICAL</span>
+  <div class="sev-bar-bg">
+    <div class="sev-bar" style="width:25.0%;background:#ff4d4d"></div>
+  </div>
+  <span class="sev-count">3</span>
+</div><div class="sev-row">
+  <span class="sev-label" style="color:#ff8c42">HIGH</span>
+  <div class="sev-bar-bg">
+    <div class="sev-bar" style="width:66.66666666666666%;background:#ff8c42"></div>
+  </div>
+  <span class="sev-count">8</span>
+</div><div class="sev-row">
+  <span class="sev-label" style="color:#ffd166">MEDIUM</span>
+  <div class="sev-bar-bg">
+    <div class="sev-bar" style="width:8.333333333333332%;background:#ffd166"></div>
+  </div>
+  <span class="sev-count">1</span>
+</div><div class="sev-row">
+  <span class="sev-label" style="color:#60a5fa">LOW</span>
+  <div class="sev-bar-bg">
+    <div class="sev-bar" style="width:0.0%;background:#60a5fa"></div>
+  </div>
+  <span class="sev-count">0</span>
+</div><div class="sev-row">
+  <span class="sev-label" style="color:#94a3b8">INFO</span>
+  <div class="sev-bar-bg">
+    <div class="sev-bar" style="width:0.0%;background:#94a3b8"></div>
+  </div>
+  <span class="sev-count">0</span>
+</div>
+  </div>
+</div>
+
+<div class="findings-list">
+
+<div class="finding-card" style="border-left:4px solid #ff4d4d">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff4d4d22;color:#ff4d4d;border:1px solid #ff4d4d44">🔴 CRITICAL</span>
+      <span class="vuln-id">SEC-001</span>
+    </div>
+    <div class="finding-title">SQL Injection via String Formatting</div>
+    <div class="finding-meta">
+      <span>📌 Line 76</span>
+      <span>🔗 CWE-89</span>
+      <span>📋 A03:2021 – Injection</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">76</span><code>    result = conn.execute(f"SELECT * FROM users WHERE id={user_id}").fetchone()</code></div>
+    <div class="finding-section"><strong>Description</strong><p>User-controlled input is directly interpolated into a SQL query string without parameterization. An attacker can manipulate query logic to bypass authentication, exfiltrate data, or modify the database.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Complete database compromise. Authentication bypass using payloads like `' OR '1'='1`. Potential data deletion with DROP TABLE. Data exfiltration via UNION attacks.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Use parameterized queries / prepared statements. Never concatenate user input into SQL strings.</p>
+      <pre><code>query = "SELECT * FROM users WHERE username=? AND password=?"
+cursor.execute(query, (username, password_hash))</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff4d4d">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff4d4d22;color:#ff4d4d;border:1px solid #ff4d4d44">🔴 CRITICAL</span>
+      <span class="vuln-id">SEC-003</span>
+    </div>
+    <div class="finding-title">OS Command Injection</div>
+    <div class="finding-meta">
+      <span>📌 Line 47</span>
+      <span>🔗 CWE-78</span>
+      <span>📋 A03:2021 – Injection</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">47</span><code>    result = subprocess.check_output(f"ping -c 1 {host}", shell=True)</code></div>
+    <div class="finding-section"><strong>Description</strong><p>User input is passed to a shell command with shell=True. An attacker can append shell metacharacters (;, &&, |, $()) to execute arbitrary OS commands on the server.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Full server compromise. Arbitrary command execution, data exfiltration, backdoor installation, lateral movement within the network.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Use subprocess with shell=False and pass arguments as a list. Validate and whitelist input against a strict allowlist before use.</p>
+      <pre><code>import ipaddress
+# Validate input is a real IP/hostname
+try:
+    ipaddress.ip_address(host)  # raises ValueError if invalid
+except ValueError:
+    return "Invalid host", 400
+result = subprocess.run(["ping", "-c", "1", host],
+                        capture_output=True, timeout=5, shell=False)</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff4d4d">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff4d4d22;color:#ff4d4d;border:1px solid #ff4d4d44">🔴 CRITICAL</span>
+      <span class="vuln-id">SEC-005</span>
+    </div>
+    <div class="finding-title">Insecure Deserialization (Pickle)</div>
+    <div class="finding-meta">
+      <span>📌 Line 55</span>
+      <span>🔗 CWE-502</span>
+      <span>📋 A08:2021 – Software and Data Integrity Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">55</span><code>    obj = pickle.loads(base64.b64decode(data))</code></div>
+    <div class="finding-section"><strong>Description</strong><p>pickle.loads() deserializes arbitrary Python objects from untrusted data. A malicious payload can execute arbitrary code during deserialization — before any validation can occur.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Remote Code Execution (RCE). An attacker crafts a malicious pickle payload that runs any OS command when deserialized.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Never deserialize untrusted data with pickle. Use JSON for data exchange. If serialization is necessary, use signing (itsdangerous.URLSafeSerializer) to verify integrity.</p>
+      <pre><code>import json
+from itsdangerous import URLSafeSerializer
+
+# For session data, use signed JSON:
+serializer = URLSafeSerializer(app.secret_key)
+data = serializer.loads(token)  # raises BadSignature if tampered</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-002</span>
+    </div>
+    <div class="finding-title">Cross-Site Scripting (XSS) – Reflected</div>
+    <div class="finding-meta">
+      <span>📌 Line 40</span>
+      <span>🔗 CWE-79</span>
+      <span>📋 A03:2021 – Injection</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">40</span><code>    return render_template_string(f"&lt;h1&gt;Results for: {term}&lt;/h1&gt;")</code></div>
+    <div class="finding-section"><strong>Description</strong><p>User-supplied input is rendered directly into an HTML response without sanitization or escaping. An attacker can inject malicious JavaScript to steal session tokens, redirect users, or perform actions on their behalf.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Session hijacking via document.cookie theft, credential harvesting through injected forms, malware distribution, defacement.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Use Jinja2 templates with auto-escaping (default in Flask). Never use render_template_string with unsanitized f-strings. Use markupsafe.escape() for inline rendering.</p>
+      <pre><code># Use templates with auto-escaping:
+# return render_template('search.html', term=term)
+# In template: &lt;h1&gt;Results for: {{ term }}&lt;/h1&gt;  {# auto-escaped #}</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-004</span>
+    </div>
+    <div class="finding-title">Hardcoded Credentials / Secret Keys</div>
+    <div class="finding-meta">
+      <span>📌 Line 16</span>
+      <span>🔗 CWE-798</span>
+      <span>📋 A07:2021 – Identification and Authentication Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">16</span><code>app.secret_key = "12345"  # VULN-05: Hardcoded weak secret key</code></div>
+    <div class="finding-section"><strong>Description</strong><p>Credentials, API keys, or secret keys are hardcoded in source code. When the code is committed to version control or shared, attackers gain permanent access to those secrets.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Unauthorized access to databases, APIs, and services. Secrets found in public repos are harvested by bots within minutes of exposure.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Store secrets in environment variables or a secrets manager (HashiCorp Vault, AWS Secrets Manager, .env files excluded from git). Use python-decouple or os.environ.</p>
+      <pre><code>import os
+from decouple import config
+
+DB_PASSWORD = os.environ.get("DB_PASSWORD")  # or config("DB_PASSWORD")
+SECRET_KEY  = os.environ.get("FLASK_SECRET_KEY")
+assert SECRET_KEY, "FLASK_SECRET_KEY must be set"</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-004</span>
+    </div>
+    <div class="finding-title">Hardcoded Credentials / Secret Keys</div>
+    <div class="finding-meta">
+      <span>📌 Line 19</span>
+      <span>🔗 CWE-798</span>
+      <span>📋 A07:2021 – Identification and Authentication Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">19</span><code>DB_PASSWORD = "admin123"</code></div>
+    <div class="finding-section"><strong>Description</strong><p>Credentials, API keys, or secret keys are hardcoded in source code. When the code is committed to version control or shared, attackers gain permanent access to those secrets.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Unauthorized access to databases, APIs, and services. Secrets found in public repos are harvested by bots within minutes of exposure.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Store secrets in environment variables or a secrets manager (HashiCorp Vault, AWS Secrets Manager, .env files excluded from git). Use python-decouple or os.environ.</p>
+      <pre><code>import os
+from decouple import config
+
+DB_PASSWORD = os.environ.get("DB_PASSWORD")  # or config("DB_PASSWORD")
+SECRET_KEY  = os.environ.get("FLASK_SECRET_KEY")
+assert SECRET_KEY, "FLASK_SECRET_KEY must be set"</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-004</span>
+    </div>
+    <div class="finding-title">Hardcoded Credentials / Secret Keys</div>
+    <div class="finding-meta">
+      <span>📌 Line 20</span>
+      <span>🔗 CWE-798</span>
+      <span>📋 A07:2021 – Identification and Authentication Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">20</span><code>API_KEY     = "sk-live-abc123supersecret"</code></div>
+    <div class="finding-section"><strong>Description</strong><p>Credentials, API keys, or secret keys are hardcoded in source code. When the code is committed to version control or shared, attackers gain permanent access to those secrets.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Unauthorized access to databases, APIs, and services. Secrets found in public repos are harvested by bots within minutes of exposure.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Store secrets in environment variables or a secrets manager (HashiCorp Vault, AWS Secrets Manager, .env files excluded from git). Use python-decouple or os.environ.</p>
+      <pre><code>import os
+from decouple import config
+
+DB_PASSWORD = os.environ.get("DB_PASSWORD")  # or config("DB_PASSWORD")
+SECRET_KEY  = os.environ.get("FLASK_SECRET_KEY")
+assert SECRET_KEY, "FLASK_SECRET_KEY must be set"</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-004</span>
+    </div>
+    <div class="finding-title">Hardcoded Credentials / Secret Keys</div>
+    <div class="finding-meta">
+      <span>📌 Line 29</span>
+      <span>🔗 CWE-798</span>
+      <span>📋 A07:2021 – Identification and Authentication Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">29</span><code>    query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"</code></div>
+    <div class="finding-section"><strong>Description</strong><p>Credentials, API keys, or secret keys are hardcoded in source code. When the code is committed to version control or shared, attackers gain permanent access to those secrets.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Unauthorized access to databases, APIs, and services. Secrets found in public repos are harvested by bots within minutes of exposure.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Store secrets in environment variables or a secrets manager (HashiCorp Vault, AWS Secrets Manager, .env files excluded from git). Use python-decouple or os.environ.</p>
+      <pre><code>import os
+from decouple import config
+
+DB_PASSWORD = os.environ.get("DB_PASSWORD")  # or config("DB_PASSWORD")
+SECRET_KEY  = os.environ.get("FLASK_SECRET_KEY")
+assert SECRET_KEY, "FLASK_SECRET_KEY must be set"</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-006</span>
+    </div>
+    <div class="finding-title">Weak Password Hashing (MD5 / SHA1)</div>
+    <div class="finding-meta">
+      <span>📌 Line 61</span>
+      <span>🔗 CWE-327</span>
+      <span>📋 A02:2021 – Cryptographic Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">61</span><code>    return hashlib.md5(password.encode()).hexdigest()</code></div>
+    <div class="finding-section"><strong>Description</strong><p>MD5 and SHA1 are cryptographically broken and trivially reversible via rainbow tables or brute force. SHA-256 without salting is also insufficient for password storage.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Database breach → instant password recovery for all users. Credential stuffing attacks across other services where users reuse passwords.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Use bcrypt, scrypt, or Argon2 (the OWASP-recommended winner of the Password Hashing Competition). These are slow by design and include built-in salting.</p>
+      <pre><code>import bcrypt
+
+# Hash a password:
+hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt(rounds=12))
+
+# Verify:
+bcrypt.checkpw(password.encode(), hashed)  # returns True/False</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-007</span>
+    </div>
+    <div class="finding-title">Path Traversal</div>
+    <div class="finding-meta">
+      <span>📌 Line 68</span>
+      <span>🔗 CWE-22</span>
+      <span>📋 A01:2021 – Broken Access Control</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">68</span><code>    with open(os.path.join("uploads", filename)) as f:</code></div>
+    <div class="finding-section"><strong>Description</strong><p>User-supplied filenames are used directly in file path construction without sanitization. An attacker can use sequences like ../../etc/passwd to traverse outside the intended directory.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Arbitrary file read including /etc/passwd, /etc/shadow, application source code, and private keys. In write scenarios: arbitrary file write / RCE.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Use os.path.realpath() to resolve the path and verify it starts with the allowed base directory. Use pathlib for safer path handling.</p>
+      <pre><code>from pathlib import Path
+
+BASE_DIR = Path("uploads").resolve()
+
+def safe_open(filename: str):
+    requested = (BASE_DIR / filename).resolve()
+    if not str(requested).startswith(str(BASE_DIR)):
+        raise PermissionError("Path traversal detected")
+    return requested.read_text()</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ff8c42">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ff8c4222;color:#ff8c42;border:1px solid #ff8c4244">🟠 HIGH</span>
+      <span class="vuln-id">SEC-009</span>
+    </div>
+    <div class="finding-title">Sensitive Data Exposure via Debug Endpoint</div>
+    <div class="finding-meta">
+      <span>📌 Line 83</span>
+      <span>🔗 CWE-200</span>
+      <span>📋 A02:2021 – Cryptographic Failures</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">83</span><code>    return str(os.environ)</code></div>
+    <div class="finding-section"><strong>Description</strong><p>Exposing environment variables to HTTP responses leaks all secrets, API keys, database credentials, and internal configuration stored in the environment.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Complete secret exposure. All credentials loaded from environment (database, cloud, third-party APIs) are visible to any HTTP client.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Remove all debug endpoints before deployment. Use proper logging (not HTTP responses) for diagnostics. Apply authentication to any diagnostic routes.</p>
+      <pre><code># Remove /debug endpoint entirely.
+# For diagnostics in staging, use authenticated admin routes:
+@app.route("/admin/health")
+@require_admin_auth
+def health_check():
+    return {"status": "ok", "version": APP_VERSION}</code></pre>
+    </div>
+  </div>
+</div>
+<div class="finding-card" style="border-left:4px solid #ffd166">
+  <div class="finding-header">
+    <div>
+      <span class="badge" style="background:#ffd16622;color:#ffd166;border:1px solid #ffd16644">🟡 MEDIUM</span>
+      <span class="vuln-id">SEC-008</span>
+    </div>
+    <div class="finding-title">Debug Mode Enabled in Production</div>
+    <div class="finding-meta">
+      <span>📌 Line 86</span>
+      <span>🔗 CWE-215</span>
+      <span>📋 A05:2021 – Security Misconfiguration</span>
+    </div>
+  </div>
+  <div class="finding-body">
+    <div class="code-line"><span class="ln">86</span><code>    app.run(debug=True)  # VULN-11: debug=True in production exposes stack traces</code></div>
+    <div class="finding-section"><strong>Description</strong><p>Flask debug mode exposes an interactive Werkzeug debugger in the browser on any unhandled exception. This provides Python REPL access on the server.</p></div>
+    <div class="finding-section impact"><strong>Impact</strong><p>Full server compromise. The debugger allows arbitrary Python execution in the server's process context without authentication.</p></div>
+    <div class="finding-section remedy"><strong>Remediation</strong><p>Set debug=False in production. Use environment variables to control mode. Never deploy with debug=True.</p>
+      <pre><code>import os
+
+if __name__ == "__main__":
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug)</code></pre>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>CodeAlpha Cybersecurity Internship — Task 3: Secure Coding Review</p>
+  <p style="margin-top:6px">Built by [Your Name] | GitHub: CodeAlpha_SecureCodingReview</p>
+</footer>
+</body></html>
